@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>About — StegoDetect </title>
+  <title>About — StegC2Finder </title>
   <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 </head>
@@ -12,14 +12,14 @@
   <div class="nav-brand">
     <div class="brand-icon">🔍</div>
     <div>
-      <div class="brand-name">StegoDetect <span class="brand-version">v2.0</span></div>
-      <div class="brand-sub">Parul University · CSE Dept</div>
+      <div class="brand-name">StegC2Finder <span class="brand-version">v2.0</span></div>
+      <div class="brand-sub">Developed for Amroha Police Cyber Internship</div>
     </div>
   </div>
   <div class="nav-links">
     <a href="/" class="nav-link">Analyser</a>
     <a href="/about" class="nav-link active">About</a>
-    <div class="nav-badge">Minor Project I · 2026-27</div>
+    <div class="nav-badge"></div>
   </div>
 </nav>
 
@@ -27,11 +27,13 @@
 
   <div style="text-align:center;padding:2rem 0 1.5rem">
     <h1 style="font-size:2rem;font-weight:800">About This Project</h1>
-    <p style="color:var(--text-sec);max-width:600px;margin:0.5rem auto 0">Minor Project II · CSE VI Semester · Parul Institute of Technology</p>
+    <p style="color:var(--text-sec);max-width:600px;margin:0.5rem auto 0">A cybersecurity tool developed for Amroha Police Cyber Internship</p>
   </div>
 
   <div class="card about-card">
-    <div class="sh">📌 Project Overview</div>
+    <div class="sh">🏢 Developed For</div>
+    <p class="ab-p">This project is developed for <strong>Amroha Police Cyber Internship</strong> to strengthen cybersecurity capabilities and provide advanced steganography detection tools for law enforcement and cyber crime investigation purposes.</p>
+  </div>
     <p class="ab-p">This system detects hidden information embedded inside digital images using <strong>Noise Residual Analysis</strong> and <strong>Machine Learning</strong>. Steganography hides secret data inside images imperceptibly — making it a serious cybersecurity threat when used maliciously to deliver malware payloads. Our system uses NumPy and OpenCV to compute multi-scale Gaussian noise residuals, extracts 16 statistical features, and classifies images using a trained Random Forest model.</p>
   </div>
 
@@ -83,7 +85,7 @@
   <div class="card about-card">
     <div class="sh">👨‍💻 Project Team</div>
     <div class="team-grid">
-      {% for m in [("JK","Jignesh Kumar","2303051260068"),("PY","Praveen Yogi","2303051260033"),("AM","Aluel Mayuol Madut Yel","2303051260053"),("LM","Lilian John Mwakamala","2303051260026")] %}
+      {% for m in [("NV","Narendra Varfa","603"),("TP","Tejaswi Pandey","1016"),("NC","Nikhil Chaudhry","618"),("GS","Govind Singh","343"),("PY","Praveen Yogi","698")] %}
       <div class="team-card">
         <div class="avatar">{{m[0]}}</div>
         <strong>{{m[1]}}</strong>
@@ -92,8 +94,8 @@
       {% endfor %}
     </div>
     <div class="guide-box">
-      <strong>Ms. Sweety Mahendrabhai Patel</strong>
-      <span>Project Guide · Assistant Professor, CSE Department</span>
+      <strong>Praveen Yogi</strong>
+      <span>Team Leader · Amroha Police Cyber Internship</span>
     </div>
   </div>
 
@@ -102,12 +104,11 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <div class="ft-title">Detection of Steganography & Malicious File Analysis</div>
-      <div class="ft-sub">Minor Project I · CSE Dept · Parul Institute of Technology · AY 2026-2027</div>
+      <div class="ft-sub">Developed for Amroha Police Cyber Internship</div>
     </div>
     <div class="ft-right">
-      <div class="ft-guide">Guide: <strong>Ms. Sweety Mahendrabhai Patel</strong></div>
-      <div class="ft-members">Jignesh Kumar · Praveen Yogi · Aluel Mayuol Madut Yel · Lilian John Mwakamala </div>
+      <div class="ft-guide">Team Leader: <strong>Praveen Yogi</strong></div>
+      <div class="ft-members">Narendra Varfa · Tejaswi Pandey · Nikhil Chaudhary · Govind Singh · Praveen Yogi </div>
     </div>
   </div>
 </footer>
