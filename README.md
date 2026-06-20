@@ -1,19 +1,9 @@
 # 🔍 StegoDetect v2.0 — Steganography Detection System
 ### Detection of Steganography and Malicious File Analysis
-**Parul Institute of Technology · CSE Dept · Minor Project II · AY 2026-27**
 **Engine: NumPy + OpenCV + Random Forest ML**
 
 ---
 
-## 👥 Team
-| Name | Enrollment No. |
-|---|---|
-| Jignesh Kumar | 23030512600 |
-| Praveen Yogi | 23030512601 |
-| Aluel Mayuol Madut Yel | 2303051260053 |
-| Lilian John Mwakamala | 2303051260026 |
-
-**Guide:** Ms. Sweety Mahendrabhai Patel (Asst. Professor, CSE Dept.)
 
 ---
 
