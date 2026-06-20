@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>About — StegoDetect </title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="brand-icon">🔍</div>
+    <div>
+      <div class="brand-name">StegoDetect <span class="brand-version">v2.0</span></div>
+      <div class="brand-sub">Parul University · CSE Dept</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Analyser</a>
+    <a href="/about" class="nav-link active">About</a>
+    <div class="nav-badge">Minor Project I · 2026-27</div>
+  </div>
+</nav>
+
+<main class="container" style="padding-top:2rem">
+
+  <div style="text-align:center;padding:2rem 0 1.5rem">
+    <h1 style="font-size:2rem;font-weight:800">About This Project</h1>
+    <p style="color:var(--text-sec);max-width:600px;margin:0.5rem auto 0">Minor Project II · CSE VI Semester · Parul Institute of Technology</p>
+  </div>
+
+  <div class="card about-card">
+    <div class="sh">📌 Project Overview</div>
+    <p class="ab-p">This system detects hidden information embedded inside digital images using <strong>Noise Residual Analysis</strong> and <strong>Machine Learning</strong>. Steganography hides secret data inside images imperceptibly — making it a serious cybersecurity threat when used maliciously to deliver malware payloads. Our system uses NumPy and OpenCV to compute multi-scale Gaussian noise residuals, extracts 16 statistical features, and classifies images using a trained Random Forest model.</p>
+  </div>
+
+  <div class="card about-card">
+    <div class="sh">⚙️ Detection Pipeline</div>
+    <div class="pipeline">
+      {% for s in [("📤","Upload"),("⬛","Grayscale"),("🌀","Gauss 3x3"),("🌀","Gauss 5x5"),("🌊","Residuals"),("📐","16 Features"),("🧠","RF Model"),("✅","Result")] %}
+      <div class="pipe-step"><div class="pipe-icon">{{s[0]}}</div><div class="pipe-lbl">{{s[1]}}</div></div>
+      {% if not loop.last %}<div class="pipe-arr">→</div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card about-card">
+    <div class="sh">🔢 16 ML Features Extracted</div>
+    <div class="feat-about">
+      {% for f in [
+        ("Mean (r3)","Average residual value at 3×3 scale","🎯"),
+        ("Std Dev (r3)","Spread of residual at 3×3 scale","📏"),
+        ("Variance (r3)","Variation at 3×3 scale","📊"),
+        ("Energy (r3)","Power of residual at 3×3","⚡"),
+        ("Skewness (r3)","Distribution asymmetry at 3×3","〰"),
+        ("Kurtosis (r3)","Tail weight at 3×3 scale","📈"),
+        ("Mean (r5)","Average residual at 5×5 scale","🎯"),
+        ("Std Dev (r5)","Spread at 5×5 scale","📏"),
+        ("Variance (r5)","Variation at 5×5 scale","📊"),
+        ("Energy (r5)","Power at 5×5 scale","⚡"),
+        ("Skewness (r5)","Asymmetry at 5×5 scale","〰"),
+        ("Kurtosis (r5)","Tail weight at 5×5","📈"),
+        ("LSB Mean","Mean of LSB plane","🔢"),
+        ("LSB Variance","Variance in LSB plane","🎲"),
+        ("Even Pixel Ratio","Ratio of even-valued pixels","⚖"),
+        ("LSB Autocorr.","Adjacent LSB correlation","🔗"),
+      ] %}
+      <div class="fac"><span class="fai">{{f[2]}}</span><strong>{{f[0]}}</strong><span>{{f[1]}}</span></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card about-card">
+    <div class="sh">🛠️ Technology Stack</div>
+    <div class="tech-grid">
+      {% for t in [("Python 3.x","🐍"),("Flask","🌶"),("NumPy","🔢"),("OpenCV","📷"),("Scikit-learn","🤖"),("Joblib","💾"),("Pillow","🖼"),("HTML/CSS/JS","🎨")] %}
+      <div class="tech-badge"><span>{{t[1]}}</span><strong>{{t[0]}}</strong></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card about-card">
+    <div class="sh">👨‍💻 Project Team</div>
+    <div class="team-grid">
+      {% for m in [("JK","Jignesh Kumar","2303051260068"),("PY","Praveen Yogi","2303051260033"),("AM","Aluel Mayuol Madut Yel","2303051260053"),("LM","Lilian John Mwakamala","2303051260026")] %}
+      <div class="team-card">
+        <div class="avatar">{{m[0]}}</div>
+        <strong>{{m[1]}}</strong>
+        <span>{{m[2]}}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="guide-box">
+      <strong>Ms. Sweety Mahendrabhai Patel</strong>
+      <span>Project Guide · Assistant Professor, CSE Department</span>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="ft-title">Detection of Steganography & Malicious File Analysis</div>
+      <div class="ft-sub">Minor Project I · CSE Dept · Parul Institute of Technology · AY 2026-2027</div>
+    </div>
+    <div class="ft-right">
+      <div class="ft-guide">Guide: <strong>Ms. Sweety Mahendrabhai Patel</strong></div>
+      <div class="ft-members">Jignesh Kumar · Praveen Yogi · Aluel Mayuol Madut Yel · Lilian John Mwakamala </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

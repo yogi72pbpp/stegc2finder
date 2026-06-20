@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>APK Dashboard — StegoDetect v2</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="brand-icon">🔍</div>
+    <div>
+      <div class="brand-name">StegoDetect <span class="brand-version">v2.0</span></div>
+      <div class="brand-sub">Parul University · CSE Dept</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Analyser</a>
+    <a href="/apk" class="nav-link active">APK Dashboard</a>
+    <a href="/repair" class="nav-link">File Repair</a>
+    <a href="/about" class="nav-link">About</a>
+    <div class="nav-badge">Minor Project II · 2026-27</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-pill">
+      <span class="pulse"></span> Static APK Malware Analysis Engine
+    </div>
+    <h1>APK <span class="grad">Security</span> Dashboard</h1>
+    <p class="hero-desc">Upload any Android APK — our engine extracts permissions from the binary manifest, detects hardcoded C2 server IPs &amp; URLs, flags malicious API usage, and delivers a complete threat assessment report.</p>
+    <div class="hero-stats">
+      <div class="hstat"><span class="hval">AXML</span><span class="hlbl">Manifest Parse</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">C2</span><span class="hlbl">IP &amp; URL Detect</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">20+</span><span class="hlbl">Malicious APIs</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">CVSS</span><span class="hlbl">Risk Score</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="container">
+  <div class="upload-grid">
+
+    <!-- Upload card -->
+    <div class="card upload-card">
+      <div class="card-head">
+        <span class="card-icon">📦</span>
+        <div>
+          <div class="card-title">Upload APK File</div>
+          <div class="card-sub">Android Package · .apk · Any size</div>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="apkDropZone">
+        <div class="drop-icon">🤖</div>
+        <div class="drop-title">Drag &amp; drop APK here</div>
+        <div class="drop-sub">or click to browse</div>
+        <input type="file" id="apkInput" accept=".apk" hidden/>
+        <button class="btn btn-outline" onclick="document.getElementById('apkInput').click()">Choose APK</button>
+      </div>
+
+      <div class="preview-bar" id="apkPreviewBar" style="display:none">
+        <div class="apk-file-icon">📦</div>
+        <div class="preview-info">
+          <span id="apkPrevName" class="prev-name"></span>
+          <span id="apkPrevSize" class="prev-size"></span>
+        </div>
+        <button class="icon-btn" onclick="clearApk()">✕</button>
+      </div>
+
+      <button class="btn btn-primary" id="apkAnalyseBtn" onclick="runApkAnalysis()" disabled>
+        🔬 Analyse APK
+      </button>
+
+      <div class="engine-badge">
+        <span class="eb-dot"></span>
+        Engine: Binary AXML Parser + DEX String Extractor
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-col">
+      <div class="info-card">
+        <div class="ic-icon">🔐</div>
+        <div class="ic-title">Permission Analysis</div>
+        <div class="ic-text">Parses binary AndroidManifest.xml to extract all requested permissions, categorising dangerous ones (camera, SMS, location, contacts) from normal ones.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📡</div>
+        <div class="ic-title">C2 Server Detection</div>
+        <div class="ic-text">Scans DEX bytecode for hardcoded public IP addresses and suspicious URLs — the primary indicators of Command &amp; Control infrastructure embedded in malware.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">⚠️</div>
+        <div class="ic-title">Behavioural Indicators</div>
+        <div class="ic-text">Detects 20+ suspicious API patterns: keylogging, screen capture, device admin abuse, SMS exfiltration, dynamic code loading, and anti-emulation tricks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ RESULTS ═══════════════════ -->
+  <div id="apkResults" style="display:none">
+
+    <!-- Risk Banner -->
+    <div class="risk-banner" id="riskBanner">
+      <div class="risk-icon" id="riskIcon"></div>
+      <div class="risk-text">
+        <div class="risk-level" id="riskLevel"></div>
+        <div class="risk-desc" id="riskDesc"></div>
+      </div>
+      <div class="risk-score-wrap">
+        <div class="risk-score-val" id="riskScoreVal"></div>
+        <div class="risk-score-lbl">Risk Score</div>
+      </div>
+    </div>
+
+    <!-- App Overview -->
+    <div class="card mb">
+      <div class="sh">📱 Application Overview</div>
+      <div class="apk-overview-grid" id="apkOverview"></div>
+    </div>
+
+    <!-- Permissions -->
+    <div class="card mb">
+      <div class="sh">🔐 Permissions Requested
+        <span class="perm-count-badge" id="permTotalBadge"></span>
+      </div>
+
+      <div id="dangerPermsSection" style="display:none">
+        <div class="perm-section-title danger-title">
+          🚨 Dangerous Permissions <span id="dangerCount"></span>
+        </div>
+        <div class="perm-tags" id="dangerPerms"></div>
+      </div>
+
+      <div id="normalPermsSection" style="display:none; margin-top:1rem">
+        <div class="perm-section-title normal-title">
+          ✅ Normal Permissions <span id="normalCount"></span>
+        </div>
+        <div class="perm-tags" id="normalPerms"></div>
+      </div>
+
+      <div id="noPermsMsg" style="display:none" class="no-data-msg">
+        No permissions extracted. Manifest may be obfuscated or non-standard.
+      </div>
+    </div>
+
+    <!-- C2 Indicators -->
+    <div class="card mb">
+      <div class="sh">📡 C2 Server Indicators
+        <span class="c2-subtitle">Attacker-controlled infrastructure found in APK</span>
+      </div>
+
+      <!-- IPs -->
+      <div class="c2-section">
+        <div class="c2-section-hd">
+          <span class="c2-icon">🌐</span>
+          <span class="c2-label">Hardcoded Public IP Addresses</span>
+          <span class="c2-count" id="ipCount"></span>
+        </div>
+        <div id="ipTableWrap">
+          <table class="c2-table" id="ipTable">
+            <thead><tr><th>#</th><th>IP Address</th><th>Type</th><th>Risk</th></tr></thead>
+            <tbody id="ipTableBody"></tbody>
+          </table>
+          <div class="no-data-msg" id="noIpMsg" style="display:none">No hardcoded public IPs detected.</div>
+        </div>
+      </div>
+
+      <!-- URLs -->
+      <div class="c2-section" style="margin-top:1.25rem">
+        <div class="c2-section-hd">
+          <span class="c2-icon">🔗</span>
+          <span class="c2-label">Suspicious URLs / Endpoints</span>
+          <span class="c2-count" id="urlCount"></span>
+        </div>
+        <div id="urlTableWrap">
+          <table class="c2-table" id="urlTable">
+            <thead><tr><th>#</th><th>URL</th><th>Protocol</th></tr></thead>
+            <tbody id="urlTableBody"></tbody>
+          </table>
+          <div class="no-data-msg" id="noUrlMsg" style="display:none">No suspicious URLs detected.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suspicious APIs -->
+    <div class="card mb">
+      <div class="sh">🕵️ Suspicious API Usage</div>
+      <div id="susApiGrid" class="sus-api-grid"></div>
+      <div class="no-data-msg" id="noApiMsg" style="display:none">No suspicious API patterns detected.</div>
+    </div>
+
+    <!-- File Structure -->
+    <div class="card mb">
+      <div class="sh">📂 APK File Structure</div>
+      <div class="apk-struct-grid" id="apkStructGrid"></div>
+    </div>
+
+    <!-- Risk Summary -->
+    <div class="card mb risk-summary-card" id="riskSummaryCard">
+      <div class="sh">📋 Risk Analysis Summary</div>
+      <div id="riskReasonsList" class="risk-reasons"></div>
+      <div class="no-data-msg" id="noRiskMsg" style="display:none">No risk factors identified.</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="act-row">
+      <button class="btn btn-outline" onclick="resetApk()">🔄 Analyse Another APK</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Print Report</button>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="apkLoadingOverlay" style="display:none">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div class="loading-title">Analysing APK...</div>
+      <div class="steps">
+        <div class="step" id="as1">📦 Extracting APK archive (ZIP)</div>
+        <div class="step" id="as2">📋 Parsing binary AndroidManifest.xml</div>
+        <div class="step" id="as3">🔐 Extracting permissions</div>
+        <div class="step" id="as4">🔍 Scanning DEX bytecode for strings</div>
+        <div class="step" id="as5">📡 Detecting C2 IPs and URLs</div>
+        <div class="step" id="as6">⚠️ Identifying suspicious API calls</div>
+        <div class="step" id="as7">📊 Computing risk score</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="ft-title">Detection of Steganography &amp; Malicious File Analysis</div>
+      <div class="ft-sub">Minor Project II · Department of Computer Science &amp; Engineering</div>
+      <div class="ft-sub">Parul Institute of Technology, Vadodara, Gujarat · AY 2026-2027</div>
+    </div>
+    <div class="ft-right">
+      <div class="ft-guide">Guide: <strong>Ms. Sweety Mahendrabhai Patel</strong></div>
+      <div class="ft-members">Jignesh Kumar · Praveen Yogi · Aluel · Lilian John Mwakamala</div>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static',filename='js/apk.js') }}"></script>
+</body>
+</html>

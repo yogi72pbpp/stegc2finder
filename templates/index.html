@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>StegoDetect v2 — Parul University</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="brand-icon">🔍</div>
+    <div>
+      <div class="brand-name">StegoDetect <span class="brand-version">v2.0</span></div>
+      <div class="brand-sub">Parul University · CSE Dept</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link active">Analyser</a>
+    <a href="/apk" class="nav-link">APK Dashboard</a>
+    <a href="/repair" class="nav-link">File Repair</a>
+    <a href="/about" class="nav-link">About</a>
+    <div class="nav-badge">Minor Project II · 2026-27</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-pill">
+      <span class="pulse"></span> AI-Powered Detection — NumPy + OpenCV + Random Forest
+    </div>
+    <h1>Detection of <span class="grad">Steganography</span><br/>&amp; Malicious File Analysis</h1>
+    <p class="hero-desc">Upload any file — images, PDFs, Word docs, audio, video — our engine detects hidden embedded data, extracts secret text, and flags suspicious patterns in every format.</p>
+    <div class="hero-stats">
+      <div class="hstat"><span class="hval">100%</span><span class="hlbl">Train Accuracy</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">&lt;2s</span><span class="hlbl">Detection</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">8+</span><span class="hlbl">File Types</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">unlimited</span><span class="hlbl">File Size</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="container">
+  <div class="upload-grid">
+
+    <!-- Upload card -->
+    <div class="card upload-card">
+      <div class="card-head">
+        <span class="card-icon">📤</span>
+        <div>
+          <div class="card-title">Upload Any File</div>
+          <div class="card-sub">Images · PDF · Word · ODF · Audio · Video · APK</div>
+        </div>
+      </div>
+
+      <!-- File type pills -->
+      <div class="file-type-pills">
+        <span class="ftp ftp-img">🖼️ Image</span>
+        <span class="ftp ftp-pdf">📄 PDF</span>
+        <span class="ftp ftp-doc">📝 Word/ODF</span>
+        <span class="ftp ftp-audio">🎵 Audio</span>
+        <span class="ftp ftp-video">🎬 Video</span>
+        <span class="ftp ftp-apk">📦 APK</span>
+      </div>
+
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon" id="dropIcon">🖼️</div>
+        <div class="drop-title">Drag &amp; drop your file here</div>
+        <div class="drop-sub">or click to browse · PNG, JPG, WebP, PDF, DOCX, MP3, MP4, APK…</div>
+        <input type="file" id="fileInput"
+               accept="image/*,.pdf,.doc,.docx,.odt,.odf,.ods,.odp,.mp3,.wav,.flac,.ogg,.aac,.m4a,.wma,.mp4,.avi,.mkv,.mov,.wmv,.flv,.webm,.3gp,.apk"
+               hidden/>
+        <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">Choose File</button>
+      </div>
+
+      <div class="preview-bar" id="previewBar" style="display:none">
+        <img id="previewImg" class="thumb" alt="preview" style="display:none"/>
+        <div id="previewIcon" class="thumb-icon" style="display:none"></div>
+        <div class="preview-info">
+          <span id="prevName" class="prev-name"></span>
+          <span id="prevSize" class="prev-size"></span>
+          <span id="prevType" class="prev-type"></span>
+        </div>
+        <button class="icon-btn" onclick="clearFile()">✕</button>
+      </div>
+
+      <button class="btn btn-primary" id="analyseBtn" onclick="runAnalysis()" disabled>
+        🔍 Analyse File
+      </button>
+
+      <div class="engine-badge">
+        <span class="eb-dot"></span>
+        Engine: NumPy + OpenCV + Random Forest ML
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-col">
+      <div class="info-card">
+        <div class="ic-icon">🌊</div>
+        <div class="ic-title">Multi-scale Noise Residual</div>
+        <div class="ic-text">Gaussian blur at 2 scales (3×3 and 5×5) subtracted from original to isolate pixel modifications — detects hidden data in images, video frames, and raster content.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🧠</div>
+        <div class="ic-title">Random Forest Classifier</div>
+        <div class="ic-text">300-tree Random Forest trained on 8,000 image pairs using 16 statistical features — mean, variance, energy, skewness, kurtosis, LSB stats.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🔓</div>
+        <div class="ic-title">Multi-format Analysis</div>
+        <div class="ic-text">PDFs checked for JS/embedded files, Office docs for macros, audio for LSB patterns, video frames for stego signals, APKs routed to the dedicated dashboard.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ IMAGE RESULTS ═══════════════ -->
+  <div id="resultsSection" style="display:none">
+
+    <!-- Result banner -->
+    <div class="result-banner" id="resultBanner">
+      <div class="ri" id="ri"></div>
+      <div class="rt">
+        <div class="rl" id="rl"></div>
+        <div class="rd" id="rd"></div>
+      </div>
+      <div class="conf-wrap">
+        <svg viewBox="0 0 120 120" class="conf-svg">
+          <circle class="ct" cx="60" cy="60" r="50"/>
+          <circle class="cp" id="cp" cx="60" cy="60" r="50" stroke-dasharray="314.2" stroke-dashoffset="314.2"/>
+        </svg>
+        <div class="conf-inner">
+          <div class="conf-val" id="confVal"></div>
+          <div class="conf-lbl">confidence</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat row -->
+    <div class="stat-row">
+      <div class="sc"><div class="scl">File</div><div class="scv" id="sc-file">—</div></div>
+      <div class="sc"><div class="scl">Dimensions</div><div class="scv" id="sc-dims">—</div></div>
+      <div class="sc"><div class="scl">Processing</div><div class="scv" id="sc-time">—</div></div>
+      <div class="sc"><div class="scl">Engine</div><div class="scv" id="sc-engine">—</div></div>
+    </div>
+
+    <!-- Images -->
+    <div class="img-row">
+      <div class="img-panel">
+        <div class="ip-title">📷 Original Image</div>
+        <img id="origImg" class="result-img" alt="original"/>
+      </div>
+      <div class="img-panel">
+        <div class="ip-title">🔥 Noise Residual (Inferno Colormap)</div>
+        <img id="residImg" class="result-img" alt="residual"/>
+        <div class="img-note">Brighter areas = stronger hidden signal detected</div>
+      </div>
+    </div>
+
+    <!-- Probability bars -->
+    <div class="card mb">
+      <div class="sh">Classification Probability</div>
+      <div class="prob-row">
+        <span class="pn">🟢 Normal Image</span>
+        <div class="ptrack"><div class="pfill green" id="pNorm"></div></div>
+        <span class="ppct" id="pNormPct"></span>
+      </div>
+      <div class="prob-row">
+        <span class="pn">🔴 Steganographic</span>
+        <div class="ptrack"><div class="pfill red" id="pStego"></div></div>
+        <span class="ppct" id="pStegoPct"></span>
+      </div>
+    </div>
+
+    <!-- Hidden Text Box -->
+    <div class="card hidden-text-card mb" id="hiddenCard" style="display:none">
+      <div class="ht-head">
+        <span class="ht-icon">🔓</span>
+        <div>
+          <div class="sh" style="margin:0">Hidden Text Extracted!</div>
+          <div class="ht-sub">Secret message found embedded in the image via LSB steganography</div>
+        </div>
+        <span class="ht-badge" id="htBadge"></span>
+      </div>
+      <div class="ht-box" id="htBox"></div>
+      <div class="ht-actions">
+        <button class="btn btn-outline btn-sm" onclick="copyText()">📋 Copy Text</button>
+      </div>
+    </div>
+
+    <!-- Feature grid -->
+    <div class="card mb">
+      <div class="sh">📊 Extracted Features (NumPy + OpenCV)</div>
+      <div class="feat-grid" id="featGrid"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="act-row">
+      <button class="btn btn-outline" onclick="reset()">🔄 Analyse Another File</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Print Report</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ NON-IMAGE RESULTS ═══════════════ -->
+  <div id="fileResultsSection" style="display:none">
+
+    <!-- File result banner -->
+    <div class="file-result-banner" id="fileResultBanner">
+      <div class="frb-icon" id="frbIcon"></div>
+      <div class="frb-text">
+        <div class="frb-title" id="frbTitle"></div>
+        <div class="frb-sub" id="frbSub"></div>
+      </div>
+      <div class="frb-badge" id="frbBadge"></div>
+    </div>
+
+    <!-- File stat row -->
+    <div class="stat-row mb">
+      <div class="sc"><div class="scl">File</div><div class="scv" id="fsc-file">—</div></div>
+      <div class="sc"><div class="scl">Type</div><div class="scv" id="fsc-type">—</div></div>
+      <div class="sc"><div class="scl">Size</div><div class="scv" id="fsc-size">—</div></div>
+      <div class="sc"><div class="scl">Processing</div><div class="scv" id="fsc-time">—</div></div>
+    </div>
+
+    <!-- Analysis details card -->
+    <div class="card mb" id="fileDetailsCard">
+      <div class="sh" id="fileDetailsTitle">📋 File Analysis</div>
+      <div id="fileDetailsBody"></div>
+    </div>
+
+    <!-- Suspicious findings -->
+    <div class="card mb sus-card" id="susFindingsCard" style="display:none">
+      <div class="sh">⚠️ Suspicious Findings</div>
+      <div id="susFindingsList"></div>
+    </div>
+
+    <!-- APK redirect hint -->
+    <div class="card mb apk-hint-card" id="apkHintCard" style="display:none">
+      <div class="apk-hint-inner">
+        <span class="apk-hint-icon">📦</span>
+        <div>
+          <div class="apk-hint-title">For full APK analysis go to the APK Dashboard</div>
+          <div class="apk-hint-sub">Get C2 server details, permissions map, suspicious APIs, and risk score</div>
+        </div>
+        <a href="/apk" class="btn btn-primary apk-hint-btn">Open APK Dashboard →</a>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="act-row">
+      <button class="btn btn-outline" onclick="reset()">🔄 Analyse Another File</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Print Report</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loadingOverlay" style="display:none">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div class="loading-title" id="loadingTitle">Analysing file...</div>
+      <div class="steps">
+        <div class="step" id="st1">🔄 Loading &amp; preprocessing file</div>
+        <div class="step" id="st2">🌊 Computing multi-scale Gaussian residuals</div>
+        <div class="step" id="st3">🔢 Extracting 16 statistical features</div>
+        <div class="step" id="st4">🔓 Running LSB hidden text extraction</div>
+        <div class="step" id="st5">🧠 Random Forest classification</div>
+        <div class="step" id="st6">✅ Preparing results</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="ft-title">Detection of Steganography &amp; Malicious File Analysis</div>
+      <div class="ft-sub">Minor Project II · Department of Computer Science &amp; Engineering</div>
+      <div class="ft-sub">Parul Institute of Technology, Vadodara, Gujarat · AY 2026-2027</div>
+    </div>
+    <div class="ft-right">
+      <div class="ft-guide">Guide: <strong>Ms. Sweety Mahendrabhai Patel</strong></div>
+      <div class="ft-members">Jignesh Kumar · Praveen Yogi · Aluel · Lilian John Mwakamala</div>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static',filename='js/app.js') }}"></script>
+</body>
+</html>

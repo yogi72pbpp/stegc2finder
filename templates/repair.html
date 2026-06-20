@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>File Repair — StegoDetect v2</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="brand-icon">🔍</div>
+    <div>
+      <div class="brand-name">StegoDetect <span class="brand-version">v2.0</span></div>
+      <div class="brand-sub">Parul University · CSE Dept</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Analyser</a>
+    <a href="/apk" class="nav-link">APK Dashboard</a>
+    <a href="/repair" class="nav-link active">File Repair</a>
+    <a href="/about" class="nav-link">About</a>
+    <div class="nav-badge">Minor Project II · 2026-27</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-pill">
+      <span class="pulse"></span> File Signature Validation &amp; Auto-Reconstruction
+    </div>
+    <h1>File <span class="grad">Reconstruction</span> Engine</h1>
+    <p class="hero-desc">Upload any corrupted, incomplete, or signature-damaged file. The engine validates magic bytes, detects truncation, rebuilds missing headers/footers and ZIP central directories, then offers the repaired file for download.</p>
+    <div class="hero-stats">
+      <div class="hstat"><span class="hval">10+</span><span class="hlbl">File Types</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">Magic</span><span class="hlbl">Byte Check</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">Auto</span><span class="hlbl">Reconstruct</span></div>
+      <div class="hdiv"></div>
+      <div class="hstat"><span class="hval">ZIP</span><span class="hlbl">CD Rebuild</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="container">
+  <div class="upload-grid">
+
+    <!-- Upload card -->
+    <div class="card upload-card">
+      <div class="card-head">
+        <span class="card-icon">🔧</span>
+        <div>
+          <div class="card-title">Upload Corrupted File</div>
+          <div class="card-sub">Images · Audio · Video · PDF · DOCX · APK · ZIP</div>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="repairDropZone">
+        <div class="drop-icon">🗂️</div>
+        <div class="drop-title">Drag &amp; drop corrupted file here</div>
+        <div class="drop-sub">or click to browse</div>
+        <input type="file" id="repairInput"
+               accept="image/*,.pdf,.doc,.docx,.odt,.odf,.ods,.odp,.mp3,.wav,.flac,.ogg,.mp4,.avi,.mkv,.mov,.wmv,.flv,.webm,.apk,.zip"
+               hidden/>
+        <button class="btn btn-outline" onclick="document.getElementById('repairInput').click()">Choose File</button>
+      </div>
+
+      <div class="preview-bar" id="repairPrevBar" style="display:none">
+        <div class="thumb-icon" id="repairPrevIcon" style="display:none"></div>
+        <div class="preview-info">
+          <span id="repairPrevName" class="prev-name"></span>
+          <span id="repairPrevSize" class="prev-size"></span>
+          <span id="repairPrevType" class="prev-type"></span>
+        </div>
+        <button class="icon-btn" onclick="clearRepair()">✕</button>
+      </div>
+
+      <button class="btn btn-primary" id="repairBtn" onclick="runRepair()" disabled>
+        🔧 Validate &amp; Reconstruct
+      </button>
+
+      <div class="engine-badge">
+        <span class="eb-dot"></span>
+        Engine: Binary Signature Parser + ZIP Central Dir Rebuilder
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-col">
+      <div class="info-card">
+        <div class="ic-icon">🔏</div>
+        <div class="ic-title">Signature Validation</div>
+        <div class="ic-text">Checks the first bytes (magic numbers) of any file against known valid signatures for 10+ formats. Detects leading garbage, wrong headers, and type mismatches.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🏗️</div>
+        <div class="ic-title">Auto Reconstruction</div>
+        <div class="ic-text">Repairs JPEG SOI/EOI, PNG IEND chunk, WAV RIFF sizes, PDF %%EOF, GIF trailer, BMP header, MP3 frame sync, and ZIP/APK central directory from surviving local file headers.</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">⬇️</div>
+        <div class="ic-title">Repaired File Download</div>
+        <div class="ic-text">Successfully repaired files are returned immediately as a download. A hex comparison shows the before/after of the first 32 bytes to confirm the fix.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RESULTS ═══════════════ -->
+  <div id="repairResults" style="display:none">
+
+    <!-- Status banner -->
+    <div class="repair-banner" id="repairBanner">
+      <div class="rb-icon" id="rbIcon"></div>
+      <div class="rb-text">
+        <div class="rb-title" id="rbTitle"></div>
+        <div class="rb-sub"   id="rbSub"></div>
+      </div>
+      <div class="rb-badge-wrap">
+        <span class="rb-badge" id="rbBadge"></span>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stat-row mb">
+      <div class="sc"><div class="scl">File</div><div class="scv" id="rsc-name">—</div></div>
+      <div class="sc"><div class="scl">Type</div><div class="scv" id="rsc-type">—</div></div>
+      <div class="sc"><div class="scl">Original Size</div><div class="scv" id="rsc-orig">—</div></div>
+      <div class="sc"><div class="scl">Repaired Size</div><div class="scv" id="rsc-rep">—</div></div>
+    </div>
+
+    <!-- Hex comparison -->
+    <div class="card mb">
+      <div class="sh">🔬 Hex Signature Comparison (first 32 bytes)</div>
+      <div class="hex-grid">
+        <div class="hex-panel">
+          <div class="hex-label">📄 Original File</div>
+          <div class="hex-box" id="hexBefore"></div>
+        </div>
+        <div class="hex-panel">
+          <div class="hex-label">✅ Repaired File</div>
+          <div class="hex-box" id="hexAfter"></div>
+        </div>
+      </div>
+      <div class="hex-expected">
+        <span class="hex-exp-lbl">Expected magic for this type:</span>
+        <span class="hex-exp-val" id="hexExpected"></span>
+      </div>
+    </div>
+
+    <!-- Corruption found -->
+    <div class="card mb">
+      <div class="sh">🩺 Corruption Diagnosis</div>
+      <div id="corruptionList" class="diagnosis-list"></div>
+    </div>
+
+    <!-- Repairs applied -->
+    <div class="card mb" id="repairsCard" style="display:none">
+      <div class="sh">🔧 Repairs Applied</div>
+      <div id="repairsList" class="repairs-list"></div>
+    </div>
+
+    <!-- Download repaired file -->
+    <div class="card mb repair-dl-card" id="repairDlCard" style="display:none">
+      <div class="repair-dl-inner">
+        <div class="repair-dl-left">
+          <div class="repair-dl-icon">✅</div>
+          <div>
+            <div class="repair-dl-title">File Repaired Successfully!</div>
+            <div class="repair-dl-sub" id="repairDlSub"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary repair-dl-btn" id="repairDlBtn" onclick="downloadRepaired()">
+          ⬇️ Download Repaired File
+        </button>
+      </div>
+    </div>
+
+    <!-- Cannot repair -->
+    <div class="card mb cannot-repair-card" id="cannotRepairCard" style="display:none">
+      <div class="cr-inner">
+        <div class="cr-icon">❌</div>
+        <div>
+          <div class="cr-title">Automatic Repair Not Possible</div>
+          <div class="cr-sub" id="crSub"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note (e.g. ffmpeg suggestion) -->
+    <div class="card mb repair-note-card" id="repairNoteCard" style="display:none">
+      <div class="sh">💡 Repair Guidance</div>
+      <div id="repairNoteText" class="repair-note-text"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="act-row">
+      <button class="btn btn-outline" onclick="resetRepair()">🔄 Validate Another File</button>
+      <button class="btn btn-ghost"   onclick="window.print()">🖨️ Print Report</button>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="repairLoadingOverlay" style="display:none">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div class="loading-title">Validating &amp; Reconstructing...</div>
+      <div class="steps">
+        <div class="step" id="rs1">📥 Reading file bytes</div>
+        <div class="step" id="rs2">🔬 Checking file signature (magic bytes)</div>
+        <div class="step" id="rs3">🩺 Detecting corruption type</div>
+        <div class="step" id="rs4">🔧 Applying reconstruction algorithms</div>
+        <div class="step" id="rs5">✅ Verifying repaired file integrity</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="ft-title">Detection of Steganography &amp; Malicious File Analysis</div>
+      <div class="ft-sub">Minor Project II · Department of Computer Science &amp; Engineering</div>
+      <div class="ft-sub">Parul Institute of Technology, Vadodara, Gujarat · AY 2026-2027</div>
+    </div>
+    <div class="ft-right">
+      <div class="ft-guide">Guide: <strong>Ms. Sweety Mahendrabhai Patel</strong></div>
+      <div class="ft-members">Jignesh Kumar · Praveen Yogi · Aluel · Lilian John Mwakamala</div>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static',filename='js/repair.js') }}"></script>
+</body>
+</html>
